@@ -5,11 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="30e2ae42-754c-4c99-b8a6-f996cb18b0b5" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/gildedrose/strategy/NormalItemStrategy.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/gildedrose/GildedRose.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/gildedrose/GildedRose.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/gildedrose/Item.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/gildedrose/Item.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/gildedrose/GildedRose.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/gildedrose/GildedRose.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/gildedrose/Item.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/gildedrose/Item.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -153,7 +151,7 @@
       <updated>1773244519536</updated>
       <workItem from="1773244520662" duration="841000" />
       <workItem from="1773245372623" duration="4000" />
-      <workItem from="1773245421511" duration="1806000" />
+      <workItem from="1773245421511" duration="5083000" />
     </task>
     <servers />
   </component>
