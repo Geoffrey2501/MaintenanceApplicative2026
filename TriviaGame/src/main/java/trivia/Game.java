@@ -9,12 +9,19 @@ import static trivia.Categorie.*;
 // REFACTOR ME
 public class Game implements IGame {
 
+    private static final int MAX_PLAYERS = 6;
+    private static final int QUESTION_COUNT = 50;
+    private static final int STARTING_PLACE = 1;
+    private static final int STARTING_PURSE = 0;
+    private static final int BOARD_SIZE = 12;
+    private static final int WINNING_COINS = 6;
+
     private final LogService logService;
 
     ArrayList<String> players = new ArrayList<>();
-    int[] places = new int[6];
-    int[] purses = new int[6];
-    boolean[] inPenaltyBox = new boolean[6];
+    int[] places = new int[MAX_PLAYERS];
+    int[] purses = new int[MAX_PLAYERS];
+    boolean[] inPenaltyBox = new boolean[MAX_PLAYERS];
 
     Map<Categorie, LinkedList<String>> questions = Map.of(
             POP, new LinkedList<>(),
@@ -33,7 +40,7 @@ public class Game implements IGame {
 
     public Game(LogService logService) {
         this.logService = logService;
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < QUESTION_COUNT; i++) {
             questions.get(POP).addLast("Pop Question " + i);
             questions.get(SCIENCE).addLast(("Science Question " + i));
             questions.get(SPORTS).addLast(("Sports Question " + i));
@@ -50,8 +57,8 @@ public class Game implements IGame {
     }
 
     public boolean add(String playerName) {
-        places[howManyPlayers()] = 1;
-        purses[howManyPlayers()] = 0;
+        places[howManyPlayers()] = STARTING_PLACE;
+        purses[howManyPlayers()] = STARTING_PURSE;
         inPenaltyBox[howManyPlayers()] = false;
         players.add(playerName);
 
@@ -74,7 +81,7 @@ public class Game implements IGame {
 
                 logService.log(players.get(currentPlayer) + " is getting out of the penalty box");
                 places[currentPlayer] = places[currentPlayer] + roll;
-                if (places[currentPlayer] > 12) places[currentPlayer] = places[currentPlayer] - 12;
+                if (places[currentPlayer] > BOARD_SIZE) places[currentPlayer] = places[currentPlayer] - BOARD_SIZE;
 
                 logService.log(players.get(currentPlayer)
                         + "'s new location is "
@@ -89,7 +96,7 @@ public class Game implements IGame {
         } else {
 
             places[currentPlayer] = places[currentPlayer] + roll;
-            if (places[currentPlayer] > 12) places[currentPlayer] = places[currentPlayer] - 12;
+            if (places[currentPlayer] > BOARD_SIZE) places[currentPlayer] = places[currentPlayer] - BOARD_SIZE;
 
             logService.log(players.get(currentPlayer)
                     + "'s new location is "
@@ -106,7 +113,7 @@ public class Game implements IGame {
 
 
     private Categorie currentCategory() {
-        return Categorie.values()[(places[currentPlayer] - 1) % Categorie.values().length];
+        return Categorie.fromPlace(places[currentPlayer]);
     }
 
     public boolean handleCorrectAnswer() {
@@ -133,7 +140,7 @@ public class Game implements IGame {
 
         } else {
 
-            logService.log("Answer was correct!!!!");
+            logService.log("Answer was corrent!!!!");
             purses[currentPlayer]++;
             logService.log(players.get(currentPlayer)
                     + " now has "
@@ -160,6 +167,6 @@ public class Game implements IGame {
 
 
     private boolean didPlayerWin() {
-        return purses[currentPlayer] != 6;
+        return purses[currentPlayer] != WINNING_COINS;
     }
 }

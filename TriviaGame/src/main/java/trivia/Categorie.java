@@ -6,6 +6,7 @@ public enum Categorie {
     SPORTS("Sports"),
     ROCK("Rock");
 
+    private static final Categorie[] ORDERED_CATEGORIES = values();
     private final String name;
 
     Categorie(String name) {
@@ -14,5 +15,9 @@ public enum Categorie {
 
     public String getName() {
         return name;
+    }
+
+    public static Categorie fromPlace(int place) {
+        return ORDERED_CATEGORIES[Math.floorMod(place - 1, ORDERED_CATEGORIES.length)];
     }
 }
