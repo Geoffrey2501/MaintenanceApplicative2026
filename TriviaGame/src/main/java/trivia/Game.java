@@ -133,7 +133,7 @@ public class Game implements IGame {
 
         } else {
 
-            logService.log("Answer was corrent!!!!");
+            logService.log("Answer was correct!!!!");
             purses[currentPlayer]++;
             logService.log(players.get(currentPlayer)
                     + " now has "
