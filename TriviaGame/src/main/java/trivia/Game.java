@@ -1,55 +1,39 @@
 package trivia;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Map;
-
-import static trivia.Categorie.*;
 
 // REFACTOR ME
 public class Game implements IGame {
 
     private static final int MAX_PLAYERS = 6;
-    private static final int QUESTION_COUNT = 50;
     private static final int STARTING_PLACE = 1;
     private static final int STARTING_PURSE = 0;
     private static final int BOARD_SIZE = 12;
     private static final int WINNING_COINS = 6;
 
     private final LogService logService;
+    private final GestionQuestion gestionQuestion;
 
     ArrayList<String> players = new ArrayList<>();
     int[] places = new int[MAX_PLAYERS];
     int[] purses = new int[MAX_PLAYERS];
     boolean[] inPenaltyBox = new boolean[MAX_PLAYERS];
 
-    Map<Categorie, LinkedList<String>> questions = Map.of(
-            POP, new LinkedList<>(),
-            SCIENCE, new LinkedList<>(),
-            SPORTS, new LinkedList<>(),
-            ROCK, new LinkedList<>()
-    );
-
 
     int currentPlayer = 0;
     boolean isGettingOutOfPenaltyBox;
 
     public Game() {
-        this(new LogService());
+        this(new LogService(), new GestionQuestion());
     }
 
     public Game(LogService logService) {
-        this.logService = logService;
-        for (int i = 0; i < QUESTION_COUNT; i++) {
-            questions.get(POP).addLast("Pop Question " + i);
-            questions.get(SCIENCE).addLast(("Science Question " + i));
-            questions.get(SPORTS).addLast(("Sports Question " + i));
-            questions.get(ROCK).addLast(createRockQuestion(i));
-        }
+        this(logService, new GestionQuestion());
     }
 
-    public String createRockQuestion(int index) {
-        return "Rock Question " + index;
+    Game(LogService logService, GestionQuestion gestionQuestion) {
+        this.logService = logService;
+        this.gestionQuestion = gestionQuestion;
     }
 
     public boolean isPlayable() {
@@ -108,7 +92,7 @@ public class Game implements IGame {
     }
 
     private void askQuestion() {
-        logService.log(questions.get(currentCategory()).removeFirst());
+        logService.log(gestionQuestion.nextQuestionFor(currentCategory()));
     }
 
 
