@@ -1,27 +1,21 @@
 package trivia;
 
 import java.util.ArrayList;
+import java.util.List;
 
 // REFACTOR ME
 public class Game implements IGame {
 
-    private static final int MAX_PLAYERS = 6;
     private static final int STARTING_PLACE = 1;
-    private static final int STARTING_PURSE = 0;
     private static final int BOARD_SIZE = 12;
     private static final int WINNING_COINS = 6;
 
     private final LogService logService;
     private final GestionQuestion gestionQuestion;
 
-    ArrayList<String> players = new ArrayList<>();
-    int[] places = new int[MAX_PLAYERS];
-    int[] purses = new int[MAX_PLAYERS];
-    boolean[] inPenaltyBox = new boolean[MAX_PLAYERS];
-
-
-    int currentPlayer = 0;
-    boolean isGettingOutOfPenaltyBox;
+    private final List<Player> players = new ArrayList<>();
+    private int currentPlayer = 0;
+    private boolean isGettingOutOfPenaltyBox;
 
     public Game() {
         this(new LogService(), new GestionQuestion());
@@ -36,121 +30,77 @@ public class Game implements IGame {
         this.gestionQuestion = gestionQuestion;
     }
 
-    public boolean isPlayable() {
-        return (howManyPlayers() >= 2);
-    }
-
     public boolean add(String playerName) {
-        places[howManyPlayers()] = STARTING_PLACE;
-        purses[howManyPlayers()] = STARTING_PURSE;
-        inPenaltyBox[howManyPlayers()] = false;
-        players.add(playerName);
-
+        players.add(new Player(playerName, STARTING_PLACE));
         logService.log(playerName + " was added");
         logService.log("They are player number " + players.size());
         return true;
     }
 
-    public int howManyPlayers() {
-        return players.size();
-    }
-
     public void roll(int roll) {
-        logService.log(players.get(currentPlayer) + " is the current player");
+        Player player = players.get(currentPlayer);
+        logService.log(player.getName() + " is the current player");
         logService.log("They have rolled a " + roll);
 
-        if (inPenaltyBox[currentPlayer]) {
+        if (player.isInPenaltyBox()) {
             if (roll % 2 != 0) {
                 isGettingOutOfPenaltyBox = true;
-
-                logService.log(players.get(currentPlayer) + " is getting out of the penalty box");
-                places[currentPlayer] = places[currentPlayer] + roll;
-                if (places[currentPlayer] > BOARD_SIZE) places[currentPlayer] = places[currentPlayer] - BOARD_SIZE;
-
-                logService.log(players.get(currentPlayer)
-                        + "'s new location is "
-                        + places[currentPlayer]);
+                logService.log(player.getName() + " is getting out of the penalty box");
+                player.move(roll, BOARD_SIZE);
+                logService.log(player.getName() + "'s new location is " + player.getPlace());
                 logService.log("The category is " + currentCategory().getName());
                 askQuestion();
             } else {
-                logService.log(players.get(currentPlayer) + " is not getting out of the penalty box");
+                logService.log(player.getName() + " is not getting out of the penalty box");
                 isGettingOutOfPenaltyBox = false;
             }
-
         } else {
-
-            places[currentPlayer] = places[currentPlayer] + roll;
-            if (places[currentPlayer] > BOARD_SIZE) places[currentPlayer] = places[currentPlayer] - BOARD_SIZE;
-
-            logService.log(players.get(currentPlayer)
-                    + "'s new location is "
-                    + places[currentPlayer]);
+            player.move(roll, BOARD_SIZE);
+            logService.log(player.getName() + "'s new location is " + player.getPlace());
             logService.log("The category is " + currentCategory().getName());
             askQuestion();
         }
-
     }
+
 
     private void askQuestion() {
         logService.log(gestionQuestion.nextQuestionFor(currentCategory()));
     }
 
-
     private Categorie currentCategory() {
-        return Categorie.fromPlace(places[currentPlayer]);
+        return Categorie.fromPlace(players.get(currentPlayer).getPlace());
     }
 
     public boolean handleCorrectAnswer() {
-        if (inPenaltyBox[currentPlayer]) {
-            if (isGettingOutOfPenaltyBox) {
-                logService.log("Answer was corrent!!!!");
-                purses[currentPlayer]++;
-                logService.log(players.get(currentPlayer)
-                        + " now has "
-                        + purses[currentPlayer]
-                        + " Gold Coins.");
-
-                boolean winner = didPlayerWin();
-                currentPlayer++;
-                if (currentPlayer == players.size()) currentPlayer = 0;
-
-                return winner;
-            } else {
-                currentPlayer++;
-                if (currentPlayer == players.size()) currentPlayer = 0;
-                return true;
-            }
-
-
-        } else {
-
-            logService.log("Answer was corrent!!!!");
-            purses[currentPlayer]++;
-            logService.log(players.get(currentPlayer)
-                    + " now has "
-                    + purses[currentPlayer]
-                    + " Gold Coins.");
-
-            boolean winner = didPlayerWin();
-            currentPlayer++;
-            if (currentPlayer == players.size()) currentPlayer = 0;
-
-            return winner;
+        Player player = players.get(currentPlayer);
+        if (player.isInPenaltyBox() && !isGettingOutOfPenaltyBox) {
+            advancePlayer();
+            return true;
         }
+
+        logService.log("Answer was corrent!!!!");
+        player.addCoin();
+        logService.log(player.getName() + " now has " + player.getPurse() + " Gold Coins.");
+
+        boolean gameStillRunning = isGameStillRunning();
+        advancePlayer();
+        return gameStillRunning;
     }
 
     public boolean wrongAnswer() {
+        Player player = players.get(currentPlayer);
         logService.log("Question was incorrectly answered");
-        logService.log(players.get(currentPlayer) + " was sent to the penalty box");
-        inPenaltyBox[currentPlayer] = true;
-
-        currentPlayer++;
-        if (currentPlayer == players.size()) currentPlayer = 0;
+        logService.log(player.getName() + " was sent to the penalty box");
+        player.sendToPenaltyBox();
+        advancePlayer();
         return true;
     }
 
+    private void advancePlayer() {
+        currentPlayer = (currentPlayer + 1) % players.size();
+    }
 
-    private boolean didPlayerWin() {
-        return purses[currentPlayer] != WINNING_COINS;
+    private boolean isGameStillRunning() {
+        return players.get(currentPlayer).getPurse() != WINNING_COINS;
     }
 }
