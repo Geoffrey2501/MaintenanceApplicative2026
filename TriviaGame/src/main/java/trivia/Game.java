@@ -2,35 +2,35 @@ package trivia;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Map;
+
+import static trivia.Categorie.*;
 
 // REFACTOR ME
 public class Game implements IGame {
 
-    public final static String POP = "Pop";
-    public final static String SCIENCE = "Science";
-    public final static String SPORTS = "Sports";
-
-    public final static String ROCK = "Rock";
-
-    ArrayList players = new ArrayList();
+    ArrayList<String> players = new ArrayList<>();
     int[] places = new int[6];
     int[] purses = new int[6];
     boolean[] inPenaltyBox = new boolean[6];
 
-    LinkedList popQuestions = new LinkedList();
-    LinkedList scienceQuestions = new LinkedList();
-    LinkedList sportsQuestions = new LinkedList();
-    LinkedList rockQuestions = new LinkedList();
+    Map<Categorie, LinkedList<String>> questions = Map.of(
+            POP, new LinkedList<>(),
+            SCIENCE, new LinkedList<>(),
+            SPORTS, new LinkedList<>(),
+            ROCK, new LinkedList<>()
+    );
+
 
     int currentPlayer = 0;
     boolean isGettingOutOfPenaltyBox;
 
     public Game() {
         for (int i = 0; i < 50; i++) {
-            popQuestions.addLast("Pop Question " + i);
-            scienceQuestions.addLast(("Science Question " + i));
-            sportsQuestions.addLast(("Sports Question " + i));
-            rockQuestions.addLast(createRockQuestion(i));
+            questions.get(POP).addLast("Pop Question " + i);
+            questions.get(SCIENCE).addLast(("Science Question " + i));
+            questions.get(SPORTS).addLast(("Sports Question " + i));
+            questions.get(ROCK).addLast(createRockQuestion(i));
         }
     }
 
@@ -72,7 +72,7 @@ public class Game implements IGame {
                 System.out.println(players.get(currentPlayer)
                         + "'s new location is "
                         + places[currentPlayer]);
-                System.out.println("The category is " + currentCategory());
+                System.out.println("The category is " + currentCategory().getName());
                 askQuestion();
             } else {
                 System.out.println(players.get(currentPlayer) + " is not getting out of the penalty box");
@@ -87,29 +87,19 @@ public class Game implements IGame {
             System.out.println(players.get(currentPlayer)
                     + "'s new location is "
                     + places[currentPlayer]);
-            System.out.println("The category is " + currentCategory());
+            System.out.println("The category is " + currentCategory().getName());
             askQuestion();
         }
 
     }
 
     private void askQuestion() {
-        if (currentCategory().equals(POP))
-            System.out.println(popQuestions.removeFirst());
-        if (currentCategory().equals(SCIENCE))
-            System.out.println(scienceQuestions.removeFirst());
-        if (currentCategory().equals(SPORTS))
-            System.out.println(sportsQuestions.removeFirst());
-        if (currentCategory().equals(ROCK))
-            System.out.println(rockQuestions.removeFirst());
+        System.out.println(questions.get(currentCategory()).removeFirst());
     }
 
 
-    private String currentCategory() {
-        if (places[currentPlayer] - 1 == 0 || places[currentPlayer] - 1 == 4 || places[currentPlayer] - 1 == 8) return POP;
-        if (places[currentPlayer] - 1 == 1 || places[currentPlayer] - 1 == 5 || places[currentPlayer] - 1 == 9) return SCIENCE;
-        if (places[currentPlayer] - 1 == 2 || places[currentPlayer] - 1 == 6 || places[currentPlayer] - 1 == 10) return SPORTS;
-        return ROCK;
+    private Categorie currentCategory() {
+        return Categorie.values()[(places[currentPlayer] - 1) % Categorie.values().length];
     }
 
     public boolean handleCorrectAnswer() {
@@ -163,6 +153,6 @@ public class Game implements IGame {
 
 
     private boolean didPlayerWin() {
-        return !(purses[currentPlayer] == 6);
+        return purses[currentPlayer] != 6;
     }
 }
