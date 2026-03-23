@@ -10,5 +10,10 @@ class ValueObjectsTest {
         assertThrows(IllegalArgumentException.class, () -> new TitreEvenement(""));
         assertThrows(IllegalArgumentException.class, () -> new TitreEvenement(null));
     }
+
+   @Test
+    void DateEvenementNePeutPasEtreNull() {
+        assertThrows(IllegalArgumentException.class, () -> new ValueObject.DateEvenement(null));
+    }
     
 }
