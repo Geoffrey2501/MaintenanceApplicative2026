@@ -1,4 +1,6 @@
 import ValueObject.DateEvenement;
+import ValueObject.Lieu;
+import ValueObject.Participant;
 import ValueObject.TitreEvenement;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
@@ -26,6 +28,18 @@ class ValueObjectsTest {
     void FrequenceDoitEtrePositiveNonNull() {
         assertThrows(IllegalArgumentException.class, () -> new ValueObject.Frequence(0));
         assertThrows(IllegalArgumentException.class, () -> new ValueObject.Frequence(-1));
+    }
+
+    @Test
+    void ParticipantNotNull() {
+        assertThrows(IllegalArgumentException.class, () -> new Participant(null));
+        assertThrows(IllegalArgumentException.class, () -> new Participant(""));
+    }
+
+    @Test
+    void LieuNotNull() {
+        assertThrows(IllegalArgumentException.class, () -> new Lieu(null));
+        assertThrows(IllegalArgumentException.class, () -> new Lieu(""));
     }
     
 }
