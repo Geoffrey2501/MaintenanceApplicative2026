@@ -2,13 +2,13 @@ import ValueObject.DateEvenement;
 
 import java.time.LocalDateTime;
 import java.time.temporal.WeekFields;
-import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         CalendarManager calendar = new CalendarManager();
+        AffichageService affichageService = new AffichageConsoleService();
         Scanner scanner = new Scanner(System.in);
         String utilisateur = null;
         boolean continuer = true;
@@ -20,28 +20,28 @@ public class Main {
         while (true) {
 
             if (utilisateur == null) {
-                System.out.println("  _____         _                   _                __  __");
-                System.out.println(" / ____|       | |                 | |              |  \\/  |");
-                System.out.println(
+                affichageService.afficherMessage("  _____         _                   _                __  __");
+                affichageService.afficherMessage(" / ____|       | |                 | |              |  \\/  |");
+                affichageService.afficherMessage(
                         "| |       __ _ | |  ___  _ __    __| |  __ _  _ __  | \\  / |  __ _  _ __    __ _   __ _   ___  _ __");
-                System.out.println(
+                affichageService.afficherMessage(
                         "| |      / _` || | / _ \\| '_ \\  / _` | / _` || '__| | |\\/| | / _` || '_ \\  / _` | / _` | / _ \\| '__|");
-                System.out.println(
+                affichageService.afficherMessage(
                         "| |____ | (_| || ||  __/| | | || (_| || (_| || |    | |  | || (_| || | | || (_| || (_| ||  __/| |");
-                System.out.println(
+                affichageService.afficherMessage(
                         " \\_____| \\__,_||_| \\___||_| |_| \\__,_| \\__,_||_|    |_|  |_| \\__,_||_| |_| \\__,_| \\__, | \\___||_|");
-                System.out.println(
+                affichageService.afficherMessage(
                         "                                                                                   __/ |");
-                System.out.println(
+                affichageService.afficherMessage(
                         "                                                                                  |___/");
 
-                System.out.println("1 - Se connecter");
-                System.out.println("2 - Créer un compte");
-                System.out.println("Choix : ");
+                affichageService.afficherMessage("1 - Se connecter");
+                affichageService.afficherMessage("2 - Creer un compte");
+                affichageService.afficherMessage("Choix : ");
 
                 switch (scanner.nextLine()) {
                     case "1":
-                        System.out.print("Nom d'utilisateur: ");
+                        affichageService.afficherInvite("Nom d'utilisateur: ");
                         utilisateur = scanner.nextLine();
 
                         if (utilisateur.equals("Roger")) {
@@ -56,7 +56,7 @@ public class Main {
                                     utilisateur = null;
                                 }
                             } else {
-                                System.out.print("Mot de passe: ");
+                                affichageService.afficherInvite("Mot de passe: ");
                                 String motDePasse = scanner.nextLine();
 
                                 for (int i = 0; i < nbUtilisateurs; i = i + 1) {
@@ -69,17 +69,17 @@ public class Main {
                         break;
 
                     case "2":
-                        System.out.print("Nom d'utilisateur: ");
+                        affichageService.afficherInvite("Nom d'utilisateur: ");
                         utilisateur = scanner.nextLine();
-                        System.out.print("Mot de passe: ");
+                        affichageService.afficherInvite("Mot de passe: ");
                         String motDePasse = scanner.nextLine();
-                        System.out.print("Répéter mot de passe: ");
+                        affichageService.afficherInvite("Repeter mot de passe: ");
                         if (scanner.nextLine().equals(motDePasse)) {
                             utilisateurs[nbUtilisateurs] = utilisateur;
                             motsDePasses[nbUtilisateurs] = motDePasse;
                             nbUtilisateurs = nbUtilisateurs + 1;
                         } else {
-                            System.out.println("Les mots de passes ne correspondent pas...");
+                            affichageService.afficherMessage("Les mots de passes ne correspondent pas...");
                             utilisateur = null;
                         }
                         break;
@@ -87,51 +87,52 @@ public class Main {
             }
 
             while (continuer && utilisateur != null) {
-                System.out.println("\nBonjour, " + utilisateur);
-                System.out.println("=== Menu Gestionnaire d'Événements ===");
-                System.out.println("1 - Voir les événements");
-                System.out.println("2 - Ajouter un rendez-vous perso");
-                System.out.println("3 - Ajouter une réunion");
-                System.out.println("4 - Ajouter un évènement périodique");
-                System.out.println("5 - Se déconnecter");
-                System.out.print("Votre choix : ");
+                affichageService.afficherSeparation();
+                affichageService.afficherMessage("Bonjour, " + utilisateur);
+                affichageService.afficherTitre("Menu Gestionnaire d'Evenements");
+                affichageService.afficherMessage("1 - Voir les evenements");
+                affichageService.afficherMessage("2 - Ajouter un rendez-vous perso");
+                affichageService.afficherMessage("3 - Ajouter une reunion");
+                affichageService.afficherMessage("4 - Ajouter un evenement periodique");
+                affichageService.afficherMessage("5 - Se deconnecter");
+                affichageService.afficherInvite("Votre choix : ");
 
                 String choix = scanner.nextLine();
 
                 switch (choix) {
                     case "1":
-                        System.out.println("\n=== Menu de visualisation d'Événements ===");
-                        System.out.println("1 - Afficher TOUS les événements");
-                        System.out.println("2 - Afficher les événements d'un MOIS précis");
-                        System.out.println("3 - Afficher les événements d'une SEMAINE précise");
-                        System.out.println("4 - Afficher les événements d'un JOUR précis");
-                        System.out.println("5 - Retour");
-                        System.out.print("Votre choix : ");
+                        affichageService.afficherTitre("Menu de visualisation d'Evenements");
+                        affichageService.afficherMessage("1 - Afficher TOUS les evenements");
+                        affichageService.afficherMessage("2 - Afficher les evenements d'un MOIS precis");
+                        affichageService.afficherMessage("3 - Afficher les evenements d'une SEMAINE precise");
+                        affichageService.afficherMessage("4 - Afficher les evenements d'un JOUR precis");
+                        affichageService.afficherMessage("5 - Retour");
+                        affichageService.afficherInvite("Votre choix : ");
 
                         choix = scanner.nextLine();
 
                         switch (choix) {
                             case "1":
-                                calendar.afficherEvenements();
+                                affichageService.afficherListe(calendar.events);
                                 break;
 
                             case "2":
-                                System.out.print("Entrez l'année (AAAA) : ");
+                                affichageService.afficherInvite("Entrez l'annee (AAAA) : ");
                                 int anneeMois = Integer.parseInt(scanner.nextLine());
-                                System.out.print("Entrez le mois (1-12) : ");
+                                affichageService.afficherInvite("Entrez le mois (1-12) : ");
                                 int mois = Integer.parseInt(scanner.nextLine());
 
                                 LocalDateTime debutMois = LocalDateTime.of(anneeMois, mois, 1, 0, 0);
                                 LocalDateTime finMois = debutMois.plusMonths(1).minusSeconds(1);
                                 DateEvenement debutVO = new DateEvenement(debutMois);
                                 DateEvenement finVO = new DateEvenement(finMois);
-                                afficherListe(calendar.eventsDansPeriode(debutVO, finVO));
+                                affichageService.afficherListe(calendar.eventsDansPeriode(debutVO, finVO));
                                 break;
 
                             case "3":
-                                System.out.print("Entrez l'année (AAAA) : ");
+                                affichageService.afficherInvite("Entrez l'annee (AAAA) : ");
                                 int anneeSemaine = Integer.parseInt(scanner.nextLine());
-                                System.out.print("Entrez le numéro de semaine (1-52) : ");
+                                affichageService.afficherInvite("Entrez le numero de semaine (1-52) : ");
                                 int semaine = Integer.parseInt(scanner.nextLine());
 
                                 LocalDateTime debutSemaine = LocalDateTime.now()
@@ -144,15 +145,15 @@ public class Main {
                                 DateEvenement d = new DateEvenement(debutSemaine);
                                 DateEvenement f = new DateEvenement(finSemaine);
 
-                                afficherListe(calendar.eventsDansPeriode(d, f));
+                                affichageService.afficherListe(calendar.eventsDansPeriode(d, f));
                                 break;
 
                             case "4":
-                                System.out.print("Entrez l'année (AAAA) : ");
+                                affichageService.afficherInvite("Entrez l'annee (AAAA) : ");
                                 int anneeJour = Integer.parseInt(scanner.nextLine());
-                                System.out.print("Entrez le mois (1-12) : ");
+                                affichageService.afficherInvite("Entrez le mois (1-12) : ");
                                 int moisJour = Integer.parseInt(scanner.nextLine());
-                                System.out.print("Entrez le jour (1-31) : ");
+                                affichageService.afficherInvite("Entrez le jour (1-31) : ");
                                 int jour = Integer.parseInt(scanner.nextLine());
 
                                 LocalDateTime debutJour = LocalDateTime.of(anneeJour, moisJour, jour, 0, 0);
@@ -161,60 +162,60 @@ public class Main {
                                 DateEvenement dj = new DateEvenement(debutJour);
                                 DateEvenement fj = new DateEvenement(finJour);
 
-                                afficherListe(calendar.eventsDansPeriode(dj, fj));
+                                affichageService.afficherListe(calendar.eventsDansPeriode(dj, fj));
                                 break;
                         }
                         break;
 
                     case "2":
                         // Ajout simplifié d'un RDV personnel
-                        System.out.print("Titre de l'événement : ");
+                        affichageService.afficherInvite("Titre de l'evenement : ");
                         String titre = scanner.nextLine();
-                        System.out.print("Année (AAAA) : ");
+                        affichageService.afficherInvite("Annee (AAAA) : ");
                         int annee = Integer.parseInt(scanner.nextLine());
-                        System.out.print("Mois (1-12) : ");
+                        affichageService.afficherInvite("Mois (1-12) : ");
                         int moisRdv = Integer.parseInt(scanner.nextLine());
-                        System.out.print("Jour (1-31) : ");
+                        affichageService.afficherInvite("Jour (1-31) : ");
                         int jourRdv = Integer.parseInt(scanner.nextLine());
-                        System.out.print("Heure début (0-23) : ");
+                        affichageService.afficherInvite("Heure debut (0-23) : ");
                         int heure = Integer.parseInt(scanner.nextLine());
-                        System.out.print("Minute début (0-59) : ");
+                        affichageService.afficherInvite("Minute debut (0-59) : ");
                         int minute = Integer.parseInt(scanner.nextLine());
-                        System.out.print("Durée (en minutes) : ");
+                        affichageService.afficherInvite("Duree (en minutes) : ");
                         int duree = Integer.parseInt(scanner.nextLine());
 
                         calendar.ajouterEvent("RDV_PERSONNEL", titre, utilisateur,
                                 LocalDateTime.of(annee, moisRdv, jourRdv, heure, minute), duree,
                                 "", "", 0);
 
-                        System.out.println("Événement ajouté.");
+                        affichageService.afficherMessage("Evenement ajoute.");
                         break;
 
                     case "3":
                         // Ajout simplifié d'une réunion
-                        System.out.print("Titre de l'événement : ");
+                        affichageService.afficherInvite("Titre de l'evenement : ");
                         String titre2 = scanner.nextLine();
-                        System.out.print("Année (AAAA) : ");
+                        affichageService.afficherInvite("Annee (AAAA) : ");
                         int annee2 = Integer.parseInt(scanner.nextLine());
-                        System.out.print("Mois (1-12) : ");
+                        affichageService.afficherInvite("Mois (1-12) : ");
                         int moisRdv2 = Integer.parseInt(scanner.nextLine());
-                        System.out.print("Jour (1-31) : ");
+                        affichageService.afficherInvite("Jour (1-31) : ");
                         int jourRdv2 = Integer.parseInt(scanner.nextLine());
-                        System.out.print("Heure début (0-23) : ");
+                        affichageService.afficherInvite("Heure debut (0-23) : ");
                         int heure2 = Integer.parseInt(scanner.nextLine());
-                        System.out.print("Minute début (0-59) : ");
+                        affichageService.afficherInvite("Minute debut (0-59) : ");
                         int minute2 = Integer.parseInt(scanner.nextLine());
-                        System.out.print("Durée (en minutes) : ");
+                        affichageService.afficherInvite("Duree (en minutes) : ");
                         int duree2 = Integer.parseInt(scanner.nextLine());
-                        System.out.println("Lieu :");
+                        affichageService.afficherMessage("Lieu :");
                         String lieu = scanner.nextLine();
 
                         String participants = utilisateur;
 
                         boolean encore = true;
-                        System.out.println("Ajouter un participant ? (oui / non)");
+                        affichageService.afficherMessage("Ajouter un participant ? (oui / non)");
                         while (scanner.nextLine().equals("oui")) {
-                            System.out.print("Participants : " + participants);
+                            affichageService.afficherInvite("Participants : " + participants);
                             participants += ", " + scanner.nextLine();
                         }
 
@@ -222,35 +223,35 @@ public class Main {
                                 LocalDateTime.of(annee2, moisRdv2, jourRdv2, heure2, minute2), duree2,
                                 lieu, participants, 0);
 
-                        System.out.println("Événement ajouté.");
+                        affichageService.afficherMessage("Evenement ajoute.");
                         break;
 
                     case "4":
                         // Ajout simplifié d'une réunion
-                        System.out.print("Titre de l'événement : ");
+                        affichageService.afficherInvite("Titre de l'evenement : ");
                         String titre3 = scanner.nextLine();
-                        System.out.print("Année (AAAA) : ");
+                        affichageService.afficherInvite("Annee (AAAA) : ");
                         int annee3 = Integer.parseInt(scanner.nextLine());
-                        System.out.print("Mois (1-12) : ");
+                        affichageService.afficherInvite("Mois (1-12) : ");
                         int moisRdv3 = Integer.parseInt(scanner.nextLine());
-                        System.out.print("Jour (1-31) : ");
+                        affichageService.afficherInvite("Jour (1-31) : ");
                         int jourRdv3 = Integer.parseInt(scanner.nextLine());
-                        System.out.print("Heure début (0-23) : ");
+                        affichageService.afficherInvite("Heure debut (0-23) : ");
                         int heure3 = Integer.parseInt(scanner.nextLine());
-                        System.out.print("Minute début (0-59) : ");
+                        affichageService.afficherInvite("Minute debut (0-59) : ");
                         int minute3 = Integer.parseInt(scanner.nextLine());
-                        System.out.print("Frequence (en jours) : ");
+                        affichageService.afficherInvite("Frequence (en jours) : ");
                         int frequence = Integer.parseInt(scanner.nextLine());
 
                         calendar.ajouterEvent("PERIODIQUE", titre3, utilisateur,
                                 LocalDateTime.of(annee3, moisRdv3, jourRdv3, heure3, minute3), 0,
                                 "", "", frequence);
 
-                        System.out.println("Événement ajouté.");
+                        affichageService.afficherMessage("Evenement ajoute.");
                         break;
 
                     default:
-                        System.out.println("Déconnexion ! Voulez-vous continuer ? (O/N)");
+                        affichageService.afficherMessage("Deconnexion ! Voulez-vous continuer ? (O/N)");
                         continuer = scanner.nextLine().trim().equalsIgnoreCase("oui");
 
                         utilisateur = null;
@@ -259,14 +260,4 @@ public class Main {
         }
     }
 
-    private static void afficherListe(List<Event> evenements) {
-        if (evenements.isEmpty()) {
-            System.out.println("Aucun événement trouvé pour cette période.");
-        } else {
-            System.out.println("Événements trouvés : ");
-            for (Event e : evenements) {
-                System.out.println("- " + e.description());
-            }
-        }
-    }
 }
