@@ -65,10 +65,4 @@ public class CalendarManager {
         }
         return false;
     }
-
-    public void afficherEvenements() {
-        for (Event e : events) {
-            System.out.println(e.description());
-        }
-    }
 }
