@@ -21,5 +21,11 @@ class ValueObjectsTest {
     void DureeMinutesNePeutPasEtreNegative() {
         assertThrows(IllegalArgumentException.class, () -> new ValueObject.DureeMinutes(-1));
     }
+
+    @Test
+    void FrequenceDoitEtrePositiveNonNull() {
+        assertThrows(IllegalArgumentException.class, () -> new ValueObject.Frequence(0));
+        assertThrows(IllegalArgumentException.class, () -> new ValueObject.Frequence(-1));
+    }
     
 }
