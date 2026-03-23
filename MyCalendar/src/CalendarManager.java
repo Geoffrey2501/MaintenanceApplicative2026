@@ -1,33 +1,50 @@
+import ValueObject.*;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CalendarManager {
+    // On garde la liste d'Event
     public List<Event> events;
 
     public CalendarManager() {
         this.events = new ArrayList<>();
     }
 
+    // Mise à jour de la signature avec les Value Objects
     public void ajouterEvent(String type, String title, String proprietaire, LocalDateTime dateDebut, int dureeMinutes,
                              String lieu, String participants, int frequenceJours) {
-        Event e = new Event(type, title, proprietaire, dateDebut, dureeMinutes, lieu, participants, frequenceJours);
+        Event e = new Event(
+                type,
+                new TitreEvenement(title),
+                new Proprietaire(proprietaire),
+                new DateEvenement(dateDebut),
+                new DureeMinutes(dureeMinutes),
+                new Lieu(lieu),
+                new Participant(participants),
+                new Frequence(frequenceJours)
+        );
         events.add(e);
     }
 
-    public List<Event> eventsDansPeriode(LocalDateTime debut, LocalDateTime fin) {
+    public List<Event> eventsDansPeriode(DateEvenement debut, DateEvenement fin) {
         List<Event> result = new ArrayList<>();
+
         for (Event e : events) {
+            // Attention : on doit utiliser .valeur() ou .getValeur() pour accéder aux dates
             if (e.type.equals("PERIODIQUE")) {
-                LocalDateTime temp = e.dateDebut;
-                while (temp.isBefore(fin)) {
-                    if (!temp.isBefore(debut)) {
+                var temp = e.dateDebut.valeur(); // LocalDateTime interne
+                while (temp.isBefore(fin.valeur())) {
+                    if (!temp.isBefore(debut.valeur())) {
                         result.add(e);
                         break;
                     }
-                    temp = temp.plusDays(e.frequenceJours);
+                    // Accès à la valeur du record Frequence
+                    temp = temp.plusDays(e.frequenceJours.valeur());
                 }
-            } else if (!e.dateDebut.isBefore(debut) && !e.dateDebut.isAfter(fin)) {
+            } else if (!e.dateDebut.valeur().isBefore(debut.valeur())
+                    && !e.dateDebut.valeur().isAfter(fin.valeur())) {
                 result.add(e);
             }
         }
@@ -35,14 +52,15 @@ public class CalendarManager {
     }
 
     public boolean conflit(Event e1, Event e2) {
-        LocalDateTime fin1 = e1.dateDebut.plusMinutes(e1.dureeMinutes);
-        LocalDateTime fin2 = e2.dateDebut.plusMinutes(e2.dureeMinutes);
+        // Calcul des fins en utilisant les valeurs internes
+        var fin1 = e1.dateDebut.valeur().plusMinutes(e1.dureeMinutes.valeur());
+        var fin2 = e2.dateDebut.valeur().plusMinutes(e2.dureeMinutes.valeur());
 
         if (e1.type.equals("PERIODIQUE") || e2.type.equals("PERIODIQUE")) {
-            return false; // Simplification abusive
+            return false;
         }
 
-        if (e1.dateDebut.isBefore(fin2) && fin1.isAfter(e2.dateDebut)) {
+        if (e1.dateDebut.valeur().isBefore(fin2) && fin1.isAfter(e2.dateDebut.valeur())) {
             return true;
         }
         return false;
