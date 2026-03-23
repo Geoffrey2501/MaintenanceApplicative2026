@@ -1,7 +1,4 @@
-import ValueObject.DateEvenement;
-import ValueObject.Lieu;
-import ValueObject.Participant;
-import ValueObject.TitreEvenement;
+import ValueObject.*;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,6 +37,12 @@ class ValueObjectsTest {
     void LieuNotNull() {
         assertThrows(IllegalArgumentException.class, () -> new Lieu(null));
         assertThrows(IllegalArgumentException.class, () -> new Lieu(""));
+    }
+
+    @Test
+    void ProprietaireNotNull() {
+        assertThrows(IllegalArgumentException.class, () -> new Proprietaire(null));
+        assertThrows(IllegalArgumentException.class, () -> new Proprietaire(""));
     }
     
 }
