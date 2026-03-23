@@ -1,3 +1,4 @@
+import ValueObject.DateEvenement;
 import ValueObject.TitreEvenement;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
@@ -14,6 +15,11 @@ class ValueObjectsTest {
    @Test
     void DateEvenementNePeutPasEtreNull() {
         assertThrows(IllegalArgumentException.class, () -> new ValueObject.DateEvenement(null));
+    }
+
+    @Test
+    void DureeMinutesNePeutPasEtreNegative() {
+        assertThrows(IllegalArgumentException.class, () -> new ValueObject.DureeMinutes(-1));
     }
     
 }
