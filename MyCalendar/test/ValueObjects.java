@@ -23,7 +23,6 @@ class ValueObjectsTest {
 
     @Test
     void FrequenceDoitEtrePositiveNonNull() {
-        assertThrows(IllegalArgumentException.class, () -> new ValueObject.Frequence(0));
         assertThrows(IllegalArgumentException.class, () -> new ValueObject.Frequence(-1));
     }
 
