@@ -1,9 +1,9 @@
 package ValueObject;
 
-public record Participant(String nom) {
+public record Participant(String participants) {
     public Participant {
-        if (nom == null || nom.isBlank()) {
-            throw new IllegalArgumentException("Le nom du participant ne peut pas être vide");
+        if (participants == null || participants.isBlank()) {
+            throw new IllegalArgumentException("Le participants du participant ne peut pas être vide");
         }
     }
 }
