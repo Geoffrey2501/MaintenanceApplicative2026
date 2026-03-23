@@ -1,3 +1,5 @@
+import ValueObject.DateEvenement;
+
 import java.time.LocalDateTime;
 import java.time.temporal.WeekFields;
 import java.util.List;
@@ -121,8 +123,9 @@ public class Main {
 
                                 LocalDateTime debutMois = LocalDateTime.of(anneeMois, mois, 1, 0, 0);
                                 LocalDateTime finMois = debutMois.plusMonths(1).minusSeconds(1);
-
-                                afficherListe(calendar.eventsDansPeriode(debutMois, finMois));
+                                DateEvenement debutVO = new DateEvenement(debutMois);
+                                DateEvenement finVO = new DateEvenement(finMois);
+                                afficherListe(calendar.eventsDansPeriode(debutVO, finVO));
                                 break;
 
                             case "3":
@@ -138,7 +141,10 @@ public class Main {
                                         .withHour(0).withMinute(0);
                                 LocalDateTime finSemaine = debutSemaine.plusDays(7).minusSeconds(1);
 
-                                afficherListe(calendar.eventsDansPeriode(debutSemaine, finSemaine));
+                                DateEvenement d = new DateEvenement(debutSemaine);
+                                DateEvenement f = new DateEvenement(finSemaine);
+
+                                afficherListe(calendar.eventsDansPeriode(d, f));
                                 break;
 
                             case "4":
@@ -152,7 +158,10 @@ public class Main {
                                 LocalDateTime debutJour = LocalDateTime.of(anneeJour, moisJour, jour, 0, 0);
                                 LocalDateTime finJour = debutJour.plusDays(1).minusSeconds(1);
 
-                                afficherListe(calendar.eventsDansPeriode(debutJour, finJour));
+                                DateEvenement dj = new DateEvenement(debutJour);
+                                DateEvenement fj = new DateEvenement(finJour);
+
+                                afficherListe(calendar.eventsDansPeriode(dj, fj));
                                 break;
                         }
                         break;
@@ -199,13 +208,12 @@ public class Main {
                         int duree2 = Integer.parseInt(scanner.nextLine());
                         System.out.println("Lieu :");
                         String lieu = scanner.nextLine();
-                        
+
                         String participants = utilisateur;
-                        
+
                         boolean encore = true;
                         System.out.println("Ajouter un participant ? (oui / non)");
-                        while (scanner.nextLine().equals("oui"))
-                        {
+                        while (scanner.nextLine().equals("oui")) {
                             System.out.print("Participants : " + participants);
                             participants += ", " + scanner.nextLine();
                         }
@@ -217,7 +225,7 @@ public class Main {
                         System.out.println("Événement ajouté.");
                         break;
 
-                        case "4":
+                    case "4":
                         // Ajout simplifié d'une réunion
                         System.out.print("Titre de l'événement : ");
                         String titre3 = scanner.nextLine();
