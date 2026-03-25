@@ -57,4 +57,42 @@ class CalendarManagerTest {
         assertEquals(1, resultats.size());
         assertEquals("Sport", resultats.get(0).getTitle().valeur());
     }
+
+    @Test
+    void detecterConflitEntreDeuxEventsConcrets() {
+        CalendarManager manager = new CalendarManager();
+
+        Event reunion = new Reunion(
+                new TitreEvenement("Sprint"), new Proprietaire("P"),
+                new DateEvenement(LocalDateTime.of(2026, 3, 23, 10, 0)),
+                new DureeMinutes(60), new Lieu("Salle 1"), new Participant("A, B")
+        );
+
+        Event rdvPerso = new RendezVousPersonnel(
+                new TitreEvenement("Pause"), new Proprietaire("P"),
+                new DateEvenement(LocalDateTime.of(2026, 3, 23, 10, 30)),
+                new DureeMinutes(15)
+        );
+
+        // La méthode conflit utilise e1.occupeLeCreneau(e2.getIntervalle())
+        assertTrue(manager.conflit(reunion, rdvPerso), "Il devrait y avoir un conflit");
+    }
+
+    @Test
+    void aucunConflitSiLesEventsSontEspaces() {
+        CalendarManager manager = new CalendarManager();
+
+        Event e1 = new RendezVousPersonnel(
+                new TitreEvenement("Matin"), new Proprietaire("G"),
+                new DateEvenement(LocalDateTime.of(2026, 3, 23, 8, 0)), new DureeMinutes(30)
+        );
+
+        Event e2 = new RendezVousPersonnel(
+                new TitreEvenement("Aprem"), new Proprietaire("G"),
+                new DateEvenement(LocalDateTime.of(2026, 3, 23, 14, 0)), new DureeMinutes(30)
+        );
+
+        assertFalse(manager.conflit(e1, e2));
+    }
 }
+
