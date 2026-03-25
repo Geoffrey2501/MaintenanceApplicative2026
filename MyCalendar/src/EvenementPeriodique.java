@@ -27,4 +27,9 @@ public class EvenementPeriodique extends Event {
         }
         return false;
     }
+
+    @Override
+    public boolean occupeLeCreneau(IntervalleTemps autre) {
+        return false;
+    }
 }
