@@ -18,6 +18,8 @@ public abstract class Event {
 
     // Méthode pour vérifier si l'événement est dans une période donnée
     public abstract boolean isWithinRange(DateEvenement debut, DateEvenement fin);
+    //Méthode pour
+    public abstract boolean occupeLeCreneau(IntervalleTemps creneau);
 
     // Accesseurs communs
     public TitreEvenement getTitle() { return title; }
