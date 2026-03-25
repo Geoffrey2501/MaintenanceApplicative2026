@@ -29,4 +29,7 @@ public class CalendarManager {
     }
 
 
+    public boolean conflit(Event e1, Event e2) {
+      return e1.occupeLeCreneau(new IntervalleTemps(e2.getDateDebut(), e2.getDateDebut().getDateFin(e2.getDureeMinutes())));
+    }
 }
