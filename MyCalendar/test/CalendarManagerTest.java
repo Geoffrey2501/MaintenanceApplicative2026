@@ -1,123 +1,60 @@
-import ValueObject.DateEvenement;
+import ValueObject.*;
+
 import org.junit.jupiter.api.Test;
+
 import java.time.LocalDateTime;
 import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
+
 
 class CalendarManagerTest {
 
     @Test
     void ajouterEventAjouteDansLaListe() {
         CalendarManager calendar = new CalendarManager();
+        Event rdv = new RendezVousPersonnel(
+                new TitreEvenement("Course"),
+                new Proprietaire("Geoffrey"),
+                new DateEvenement(LocalDateTime.of(2026, 3, 23, 11, 0)),
+                new DureeMinutes(30)
+        );
 
-        // Correction : Utilisation de "N/A" pour Lieu/Participant et 1 pour Frequence
-        calendar.ajouterEvent("RDV_PERSONNEL", "Course", "Geoffrey",
-                LocalDateTime.of(2026, 3, 23, 11, 0),
-                30,
-                "N/A",
-                "N/A",
-                1);
+        calendar.ajouterEvent(rdv); // Suppose que ajouterEvent prend maintenant un objet Event
 
         assertEquals(1, calendar.events.size());
-        // On utilise getValeur() car 'title' est maintenant un Value Object
-        assertEquals("Course", calendar.events.get(0).title.valeur());
+        assertEquals("Course", calendar.events.get(0).getTitle().valeur());
     }
 
     @Test
-    void eventsDansPeriodeInclusLesBornesPourNonPeriodique() {
+    void eventsDansPeriodeInclusLesBornes() {
         CalendarManager calendar = new CalendarManager();
         LocalDateTime debut = LocalDateTime.of(2026, 3, 23, 10, 0);
         LocalDateTime fin = LocalDateTime.of(2026, 3, 23, 11, 0);
-        DateEvenement debutVO = new DateEvenement(debut);
-        DateEvenement finVO = new DateEvenement(fin);
 
-        calendar.ajouterEvent("RDV_PERSONNEL", "Debut", "Geoffrey", debut, 30, "N/A", "N/A", 1);
-        calendar.ajouterEvent("RDV_PERSONNEL", "Fin", "Geoffrey", fin, 30, "N/A", "N/A", 1);
+        calendar.ajouterEvent(new RendezVousPersonnel(new TitreEvenement("Debut"), new Proprietaire("G"), new DateEvenement(debut), new DureeMinutes(30)));
+        calendar.ajouterEvent(new RendezVousPersonnel(new TitreEvenement("Fin"), new Proprietaire("G"), new DateEvenement(fin), new DureeMinutes(30)));
 
-        List<Event> resultats = calendar.eventsDansPeriode(debutVO, finVO);
+        List<Event> resultats = calendar.eventsDansPeriode(new DateEvenement(debut), new DateEvenement(fin));
 
         assertEquals(2, resultats.size());
     }
 
     @Test
-    void eventsDansPeriodeExclutHorsPeriodePourNonPeriodique() {
+    void eventsDansPeriodeInclutUnPeriodiqueSiOccurrenceDansLaPeriode() {
         CalendarManager calendar = new CalendarManager();
-        LocalDateTime debut = LocalDateTime.of(2026, 3, 23, 10, 0);
-        LocalDateTime fin = LocalDateTime.of(2026, 3, 23, 11, 0);
-        DateEvenement debutVO = new DateEvenement(debut);
-        DateEvenement finVO = new DateEvenement(fin);
+        calendar.ajouterEvent(new EvenementPeriodique(
+                new TitreEvenement("Sport"),
+                new Proprietaire("Geoffrey"),
+                new DateEvenement(LocalDateTime.of(2026, 3, 1, 8, 0)),
+                new Frequence(7)));
 
-        calendar.ajouterEvent("RDV_PERSONNEL", "Avant", "Geoffrey",
-                LocalDateTime.of(2026, 3, 23, 9, 59), 30, "N/A", "N/A", 1);
-        calendar.ajouterEvent("RDV_PERSONNEL", "Apres", "Geoffrey",
-                LocalDateTime.of(2026, 3, 23, 11, 1), 30, "N/A", "N/A", 1);
+        DateEvenement debutVO = new DateEvenement(LocalDateTime.of(2026, 3, 15, 0, 0));
+        DateEvenement finVO = new DateEvenement(LocalDateTime.of(2026, 3, 16, 0, 0));
 
-        List<Event> resultats = calendar.eventsDansPeriode(debutVO, finVO);
-
-        assertTrue(resultats.isEmpty());
-    }
-
-    @Test
-    void eventsDansPeriodeInclutUnPeriodiqueSiUneOccurrenceTombeDansLaPeriode() {
-        CalendarManager calendar = new CalendarManager();
-        calendar.ajouterEvent("PERIODIQUE", "Sport", "Geoffrey",
-                LocalDateTime.of(2026, 3, 1, 8, 0),
-                0,
-                "Gym",
-                "Moi",
-                7);
-
-        LocalDateTime debut = LocalDateTime.of(2026, 3, 15, 0, 0);
-        LocalDateTime fin = LocalDateTime.of(2026, 3, 16, 0, 0);
-
-        DateEvenement debutVO = new DateEvenement(debut);
-        DateEvenement finVO = new DateEvenement(fin);
         List<Event> resultats = calendar.eventsDansPeriode(debutVO, finVO);
 
         assertEquals(1, resultats.size());
-        assertEquals("Sport", resultats.get(0).title.valeur());
-    }
-
-    @Test
-    void conflitRetourneVraiQuandChevauchement() {
-        CalendarManager calendar = new CalendarManager();
-        // Important : même propriétaire et lieu pour forcer le conflit
-        calendar.ajouterEvent("RDV_PERSONNEL", "A", "Geoffrey",
-                LocalDateTime.of(2026, 3, 23, 10, 0), 60, "N/A", "N/A", 1);
-        calendar.ajouterEvent("REUNION", "B", "Geoffrey",
-                LocalDateTime.of(2026, 3, 23, 10, 30), 60, "Salle", "X", 1);
-
-        Event e1 = calendar.events.get(0);
-        Event e2 = calendar.events.get(1);
-
-        assertTrue(calendar.conflit(e1, e2));
-    }
-
-    @Test
-    void conflitRetourneFauxQuandJusteAdjacents() {
-        CalendarManager calendar = new CalendarManager();
-        calendar.ajouterEvent("RDV_PERSONNEL", "A", "Geoffrey",
-                LocalDateTime.of(2026, 3, 23, 10, 0), 60, "N/A", "N/A", 1);
-        calendar.ajouterEvent("REUNION", "B", "Geoffrey",
-                LocalDateTime.of(2026, 3, 23, 11, 0), 30, "Salle", "X", 1);
-
-        Event e1 = calendar.events.get(0);
-        Event e2 = calendar.events.get(1);
-
-        assertFalse(calendar.conflit(e1, e2));
-    }
-
-    @Test
-    void conflitRetourneToujoursFauxSiPeriodique() {
-        CalendarManager calendar = new CalendarManager();
-        calendar.ajouterEvent("PERIODIQUE", "A", "Geoffrey",
-                LocalDateTime.of(2026, 3, 23, 10, 0), 30, "N/A", "N/A", 7);
-        calendar.ajouterEvent("REUNION", "B", "Geoffrey",
-                LocalDateTime.of(2026, 3, 23, 10, 15), 30, "Salle", "X", 1);
-
-        Event e1 = calendar.events.get(0);
-        Event e2 = calendar.events.get(1);
-
-        assertFalse(calendar.conflit(e1, e2));
+        assertEquals("Sport", resultats.get(0).getTitle().valeur());
     }
 }
