@@ -1,7 +1,8 @@
 import ValueObject.*;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class EventTest {
 
@@ -44,4 +45,39 @@ class EventTest {
 
         assertEquals("Événement périodique : Standup tous les 7 jours", event.description());
     }
+
+    @Test
+    void rdvEnConflitAvecUnAutreRdv() {
+        Event rdv1 = new RendezVousPersonnel(
+                new TitreEvenement("RDV 1"), new Proprietaire("G"),
+                new DateEvenement(LocalDateTime.of(2026, 3, 23, 14, 0)),
+                new DureeMinutes(60)
+        );
+
+        IntervalleTemps creneauConflit = new IntervalleTemps(
+                new DateEvenement(LocalDateTime.of(2026, 3, 23, 14, 30)),
+                new DateEvenement(LocalDateTime.of(2026, 3, 23, 15, 30))
+        );
+
+        assertTrue(rdv1.occupeLeCreneau(creneauConflit));
+    }
+
+    @Test
+    void eventPeriodiqueNeProvoqueJamaisDeConflit() {
+        // Selon ta règle métier : un périodique retourne toujours false pour les conflits
+        Event periodique = new EvenementPeriodique(
+                new TitreEvenement("Sport"), new Proprietaire("G"),
+                new DateEvenement(LocalDateTime.of(2026, 3, 23, 18, 0)),
+                new Frequence(1)
+        );
+
+        IntervalleTemps nimporteQuelCreneau = new IntervalleTemps(
+                new DateEvenement(LocalDateTime.of(2026, 3, 23, 18, 0)),
+                new DateEvenement(LocalDateTime.of(2026, 3, 23, 19, 0))
+        );
+
+        assertFalse(periodique.occupeLeCreneau(nimporteQuelCreneau),
+                "Un événement périodique ne devrait pas bloquer le calendrier");
+    }
+
 }
