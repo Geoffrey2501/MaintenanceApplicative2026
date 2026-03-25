@@ -1,39 +1,26 @@
 import ValueObject.*;
 
-import java.time.LocalDateTime;
+public abstract class Event {
+    protected final TitreEvenement title;
+    protected final Proprietaire proprietaire;
+    protected final DateEvenement dateDebut;
+    protected final DureeMinutes dureeMinutes;
 
-public class Event {
-    public String type; // "RDV_PERSONNEL", "REUNION", "PERIODIQUE"
-    public TitreEvenement title;
-    public Proprietaire proprietaire;
-    public DateEvenement dateDebut;
-    public DureeMinutes dureeMinutes;
-    public Lieu lieu;
-    public Participant participants;
-    public Frequence frequenceJours;// uniquement pour PERIODIQUE
-
-    public Event(String type, TitreEvenement title, Proprietaire proprietaire,
-                 DateEvenement dateDebut, DureeMinutes dureeMinutes,
-                 Lieu lieu, Participant participants, Frequence frequenceJours) {
-        this.type = type;
+    protected Event(TitreEvenement title, Proprietaire proprietaire, DateEvenement dateDebut, DureeMinutes dureeMinutes) {
         this.title = title;
         this.proprietaire = proprietaire;
         this.dateDebut = dateDebut;
         this.dureeMinutes = dureeMinutes;
-        this.lieu = lieu;
-        this.participants = participants;
-        this.frequenceJours = frequenceJours;
     }
 
-    public String description() {
-        String desc = "";
-        if (type.equals("RDV_PERSONNEL")) {
-            desc = "RDV : " + title.valeur() + " à " + dateDebut.valeur();
-        } else if (type.equals("REUNION")) {
-            desc = "Réunion : " + title.valeur() + " à " + lieu.valeur() + " avec " + participants.participants();
-        } else if (type.equals("PERIODIQUE")) {
-            desc = "Événement périodique : " + title.valeur() + " tous les " + frequenceJours.valeur() + " jours";
-        }
-        return desc;
-    }
+    // Méthode polymorphe pour la description
+    public abstract String description();
+
+    // Méthode pour vérifier si l'événement est dans une période donnée
+    public abstract boolean isWithinRange(DateEvenement debut, DateEvenement fin);
+
+    // Accesseurs communs
+    public TitreEvenement getTitle() { return title; }
+    public DateEvenement getDateDebut() { return dateDebut; }
+    public DureeMinutes getDureeMinutes() { return dureeMinutes; }
 }
