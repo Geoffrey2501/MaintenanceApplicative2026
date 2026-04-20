@@ -11,6 +11,44 @@ import static org.junit.jupiter.api.Assertions.*;
 class CalendarManagerTest {
 
     @Test
+    void supprimerEventParIdRetireLEvenement() {
+        CalendarManager calendar = new CalendarManager();
+
+        Event rdv = new RendezVousPersonnel(
+                new TitreEvenement("Course"),
+                new Proprietaire("Geoffrey"),
+                new DateEvenement(LocalDateTime.of(2026, 3, 23, 11, 0)),
+                new DureeMinutes(30)
+        );
+
+        calendar.ajouterEvent(rdv);
+
+        boolean supprime = calendar.supprimerEvent(rdv.getId());
+
+        assertTrue(supprime);
+        assertEquals(0, calendar.events.size());
+    }
+
+    @Test
+    void supprimerEventParIdInconnuNeChangeRien() {
+        CalendarManager calendar = new CalendarManager();
+
+        Event rdv = new RendezVousPersonnel(
+                new TitreEvenement("Course"),
+                new Proprietaire("Geoffrey"),
+                new DateEvenement(LocalDateTime.of(2026, 3, 23, 11, 0)),
+                new DureeMinutes(30)
+        );
+
+        calendar.ajouterEvent(rdv);
+
+        boolean supprime = calendar.supprimerEvent(new EventId("event-inexistant"));
+
+        assertFalse(supprime);
+        assertEquals(1, calendar.events.size());
+    }
+
+    @Test
     void ajouterEventAjouteDansLaListe() {
         CalendarManager calendar = new CalendarManager();
         Event rdv = new RendezVousPersonnel(
