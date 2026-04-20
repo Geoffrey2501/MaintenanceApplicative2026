@@ -17,6 +17,10 @@ public class CalendarManager {
         events.add(e);
     }
 
+    public boolean supprimerEvent(EventId id) {
+        return events.removeIf(event -> event.getId().equals(id));
+    }
+
     public List<Event> eventsDansPeriode(DateEvenement debut, DateEvenement fin) {
         List<Event> result = new ArrayList<>();
         for (Event e : events) {
