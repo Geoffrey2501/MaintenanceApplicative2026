@@ -7,6 +7,19 @@ import static org.junit.jupiter.api.Assertions.*;
 class EventTest {
 
     @Test
+    void eventExposeUnEventId() {
+        Event event = new RendezVousPersonnel(
+                new TitreEvenement("Dentiste"),
+                new Proprietaire("Geoffrey"),
+                new DateEvenement(LocalDateTime.of(2026, 3, 23, 10, 15)),
+                new DureeMinutes(45)
+        );
+
+        assertNotNull(event.getId());
+        assertFalse(event.getId().valeur().isBlank());
+    }
+
+    @Test
     void descriptionRendezVousPersonnel() {
         LocalDateTime debutBrute = LocalDateTime.of(2026, 3, 23, 10, 15);
 
