@@ -1,49 +1,40 @@
+import ValueObject.Identifiant;
+import ValueObject.MotDePasse;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 public class AuthService {
-    private static final int MAX_UTILISATEURS = 99;
+    private final Map<Identifiant, MotDePasse> comptes = new HashMap<>();
 
-    private final String[] utilisateurs = new String[MAX_UTILISATEURS];
-    private final String[] motsDePasse = new String[MAX_UTILISATEURS];
-    private int nbUtilisateurs = 0;
-
-    public String connecter(String utilisateur, String motDePasse) {
-        if (utilisateur == null || motDePasse == null) {
-            return null;
-        }
-
-        if (utilisateur.equals("Roger")) {
-            return motDePasse.equals("Chat") ? utilisateur : null;
-        }
-
-        if (utilisateur.equals("Pierre")) {
-            return motDePasse.equals("KiRouhl") ? utilisateur : null;
-        }
-
-        for (int i = 0; i < nbUtilisateurs; i++) {
-            if (utilisateurs[i].equals(utilisateur) && motsDePasse[i].equals(motDePasse)) {
-                return utilisateurs[i];
-            }
-        }
-
-        return null;
+    public AuthService() {
+        comptes.put(new Identifiant("Roger"), new MotDePasse("Chat"));
+        comptes.put(new Identifiant("Pierre"), new MotDePasse("KiRouhl"));
     }
 
-    public boolean creerCompte(String utilisateur, String motDePasse, String confirmationMotDePasse) {
-        if (utilisateur == null || motDePasse == null || confirmationMotDePasse == null) {
-            return false;
-        }
+    public String connecter(String nom, String mdp) {
+        Identifiant id = new Identifiant(nom);
+        MotDePasse challenge = new MotDePasse(mdp);
 
-        if (!motDePasse.equals(confirmationMotDePasse)) {
-            return false;
-        }
+        return Optional.ofNullable(comptes.get(id))
+                .filter(motDePasseStocke -> motDePasseStocke.correspond(challenge))
+                .map(ok -> id.valeur())
+                .orElse(null);
+    }
 
-        if (nbUtilisateurs >= MAX_UTILISATEURS) {
-            return false;
-        }
+    public boolean creerCompte(String nom, String mdp, String confirmation) {
+        Identifiant id = new Identifiant(nom);
+        MotDePasse secret = new MotDePasse(mdp);
+        MotDePasse conf = new MotDePasse(confirmation);
 
-        utilisateurs[nbUtilisateurs] = utilisateur;
-        motsDePasse[nbUtilisateurs] = motDePasse;
-        nbUtilisateurs++;
-        return true;
+        return enregistrerSiValide(id, secret, conf);
+    }
+
+    private boolean enregistrerSiValide(Identifiant id, MotDePasse mdp, MotDePasse conf) {
+        if (mdp.correspond(conf)) {
+            comptes.put(id, mdp);
+            return true;
+        }
+        return false;
     }
 }
-
