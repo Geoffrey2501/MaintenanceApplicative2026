@@ -1,3 +1,5 @@
+package Event;
+
 import ValueObject.*;
 
 public class Reunion extends Event {

@@ -1,3 +1,5 @@
+package Event;
+
 import ValueObject.*;
 
 public abstract class Event {

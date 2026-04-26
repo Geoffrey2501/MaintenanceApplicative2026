@@ -1,3 +1,5 @@
+package Event;
+
 import ValueObject.*;
 
 public class RendezVousPersonnel extends Event {

@@ -1,11 +1,13 @@
+package Service;
+
+import Event.Event;
 import ValueObject.*;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CalendarManager {
-    // On garde la liste d'Event
+    // On garde la liste d'Event.Event
     public List<Event> events;
 
     public CalendarManager() {

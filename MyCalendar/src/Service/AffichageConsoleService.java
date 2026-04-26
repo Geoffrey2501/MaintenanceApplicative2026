@@ -1,3 +1,7 @@
+package Service;
+
+import Event.Event;
+
 import java.util.List;
 
 public class AffichageConsoleService implements AffichageService {
