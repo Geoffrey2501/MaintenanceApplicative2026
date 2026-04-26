@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class AuthService {
+public class AuthService implements  AuthentificationService{
     private final Map<Identifiant, MotDePasse> comptes = new HashMap<>();
 
     public AuthService() {
