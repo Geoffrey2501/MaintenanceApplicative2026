@@ -1,7 +1,4 @@
-import Event.EvenementPeriodique;
-import Event.Event;
-import Event.RendezVousPersonnel;
-import Event.Reunion;
+import Event.*;
 import ValueObject.*;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
@@ -97,4 +94,17 @@ class EventTest {
                 "Un événement périodique ne devrait pas bloquer le calendrier");
     }
 
+    @Test
+    void descriptionCoursEstCorrecte() {
+        Cours cours = new Cours(
+                new TitreEvenement("TD Logique"),
+                new Proprietaire("Etudiant1"),
+                new DateEvenement(LocalDateTime.of(2026, 4, 27, 8, 30)),
+                new DureeMinutes(90),
+                new Matiere("Informatique"),
+                new Lieu("Amphi B")
+        );
+
+        assertEquals("Cours : Informatique [TD Logique] en Amphi B", cours.description());
+    }
 }
