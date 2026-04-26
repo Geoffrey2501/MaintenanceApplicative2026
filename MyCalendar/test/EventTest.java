@@ -1,3 +1,7 @@
+import Event.EvenementPeriodique;
+import Event.Event;
+import Event.RendezVousPersonnel;
+import Event.Reunion;
 import ValueObject.*;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;

@@ -1,3 +1,8 @@
+import Event.EvenementPeriodique;
+import Event.Event;
+import Event.RendezVousPersonnel;
+import Event.Reunion;
+import Service.CalendarManager;
 import ValueObject.*;
 
 import org.junit.jupiter.api.Test;
@@ -58,7 +63,7 @@ class CalendarManagerTest {
                 new DureeMinutes(30)
         );
 
-        calendar.ajouterEvent(rdv); // Suppose que ajouterEvent prend maintenant un objet Event
+        calendar.ajouterEvent(rdv); // Suppose que ajouterEvent prend maintenant un objet Event.Event
 
         assertEquals(1, calendar.events.size());
         assertEquals("Course", calendar.events.get(0).getTitle().valeur());
