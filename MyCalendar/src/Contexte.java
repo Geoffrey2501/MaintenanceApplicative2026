@@ -17,7 +17,7 @@ public class Contexte {
     // Registre d'affichage pour supprimer le "if" dans la navigation
     private final Map<Boolean, Runnable> strategiesAffichage = new HashMap<>();
 
-    public Contexte(CalendarManager calendar, AffichageService affichage, AuthService auth) {
+    public Contexte(CalendarManager calendar, AffichageService affichage, AuthentificationService auth) {
         this.calendar = calendar;
         this.affichage = affichage;
         this.auth = auth;
