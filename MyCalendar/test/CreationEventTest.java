@@ -49,4 +49,23 @@ class CreationEvenementTest {
         assertTrue(ev instanceof EvenementPeriodique);
         assertEquals("Événement périodique : Sport tous les 7 jours", ev.description());
     }
+
+    @Test
+    void createurCoursValide() {
+        String simulationInput = "TP Refactoring\nGenie Logiciel\n2026\n04\n27\n14\n00\n120\nAmphi A\n";
+
+        // Initialisation de l'InputHandler avec le flux simulé
+        InputHandler input = new InputHandler(new AffichageConsoleService(), new Scanner(simulationInput));
+        CreateurCours factory = new CreateurCours();
+
+        // Création de l'événement via la factory
+        Event ev = factory.saisirEtCreer(input, "Geoffrey");
+
+        // Vérifications (Assertions)
+        assertAll("Vérification des propriétés du cours créé",
+                () -> assertTrue(ev instanceof Cours, "L'objet doit être une instance de Cours"),
+                () -> assertEquals("Cours : Genie Logiciel [TP Refactoring] en Amphi A", ev.description(),
+                        "La description doit correspondre au format polymorphe")
+        );
+    }
 }
