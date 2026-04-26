@@ -20,6 +20,7 @@ public class Menu {
         menuPrincipal.put("3", new ActionAjouterEvenement(new CreateurReunion()));
         menuPrincipal.put("4", new ActionAjouterEvenement(new CreateurPeriodique()));
         menuPrincipal.put("5", new ActionDeconnexion());
+        menuPrincipal.put("6", new ActionAjouterEvenement(new CreateurCours()));
 
         menus.put(false, menuAccueil);
         menus.put(true, menuPrincipal);
