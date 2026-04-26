@@ -22,14 +22,9 @@ public class CalendarManager {
     }
 
     public List<Event> eventsDansPeriode(DateEvenement debut, DateEvenement fin) {
-        List<Event> result = new ArrayList<>();
-        for (Event e : events) {
-            // Le polymorphisme remplace le "if (type.equals("PERIODIQUE"))"
-            if (e.isWithinRange(debut, fin)) {
-                result.add(e);
-            }
-        }
-        return result;
+        return events.stream()
+                .filter(event -> event.isWithinRange(debut, fin))
+                .toList();
     }
 
 
